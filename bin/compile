@@ -70,9 +70,9 @@ cd libsndfile
 
 LSF_PROFILE_PATH="$BUILD_DIR/.profile.d/libsndfile.sh"
 mkdir -p $(dirname $LSF_PROFILE_PATH)
-echo 'export PATH="$PATH:${HOME}/vendor/libsndfile"' >> $LSF_PROFILE_PATH
+echo 'export PATH="$PATH:${HOME}/vendor/libsndfile/bin"' >> $LSF_PROFILE_PATH
 
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${HOME}/vendor/libsndfile"' >> $LSF_PROFILE_PATH
+echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${HOME}/vendor/libsndfile/lib"' >> $LSF_PROFILE_PATH
 
 
 if [ -f "$2/vendor/bin/libsndfile" ]; then
@@ -97,7 +97,7 @@ fi
 rm $LIBSNDFILE_ARCHIVE_NAME
 
 cd libsndfile-1.1.0
-./configure --prefix="$BUILD_DIR" >/dev/null 2>&1
+./configure --prefix="$VENDOR_DIR/libsndfile" >/dev/null 2>&1
 make install >/dev/null 2>&1
 make distclean > /dev/null 2>&1
 
