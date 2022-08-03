@@ -85,6 +85,6 @@ fi
 rm $LIBSNDFILE_ARCHIVE_NAME
 
 cd libsndfile-1.1.0
-./configure
-make -s
-make install
+./configure --prefix="$BUILD_DIR" >/dev/null 2>&1
+make install >/dev/null 2>&1
+make distclean > /dev/null 2>&1
