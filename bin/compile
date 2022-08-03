@@ -63,8 +63,27 @@ echo "FFMPEG Installation successful" | output
 LIBSNDFILE_DOWNLOAD_URL=https://github.com/libsndfile/libsndfile/releases/download/1.1.0/libsndfile-1.1.0.tar.xz
 LIBSNDFILE_ARCHIVE_NAME=libsndfile-1.1.0.tar.xz
 
-mkdir -p libsndfile
-cd libsndfile
+cd ..
+
+LSF_PROFILE_PATH="$1/.profile.d/libsndfile.sh"
+
+echo "exporting PATH and LIBRARY_PATH" | indent
+mkdir -p $(dirname $LSF_PROFILE_PATH)
+
+echo 'export PATH="$PATH:$HOME/vendor/bin"' >> $LSF_PROFILE_PATH
+echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/vendor/lib"' >> $LSF_PROFILE_PATH
+
+mkdir -p "$1/vendor"
+export BUILD_DIR=$1"/vendor"
+export PATH="$BUILD_DIR/bin:"$PATH
+echo "-----> Building in $BUILD_DIR"
+
+
+if [ -f "$2/vendor/bin/libsndfile" ]; then
+	echo "Using cached build." | indent
+	cp -R  "$2/vendor" $1
+	exit 0
+fi
 
 echo "Downloading $LIBSNDFILE_DOWNLOAD_URL" | output
 
@@ -88,3 +107,8 @@ cd libsndfile-1.1.0
 ./configure --prefix="$BUILD_DIR" >/dev/null 2>&1
 make install >/dev/null 2>&1
 make distclean > /dev/null 2>&1
+
+
+echo "-----> Caching build."
+mkdir -p $2
+cp -R "$BUILD_DIR/" $2
