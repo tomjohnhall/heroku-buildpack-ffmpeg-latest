@@ -83,11 +83,12 @@ fi
 
 echo "Downloading $LIBSNDFILE_DOWNLOAD_URL" | output
 
+echo "wget"
 wget --quiet $LIBSNDFILE_DOWNLOAD_URL
 
 echo "Unpacking the lsf archive" | output
 
-tar -xf "./$LIBSNDFILE_ARCHIVE_NAME" --strip-components=1
+tar -xf "./$LIBSNDFILE_ARCHIVE_NAME"
 
 if [ "$?" != "0" ]; then
   echo "Failed to unpack libsndfile" | output && exit 1
@@ -95,6 +96,7 @@ fi
 
 rm $LIBSNDFILE_ARCHIVE_NAME
 
+echo $(ls)
 cd libsndfile-1.1.0
 ./configure --prefix="$BUILD_DIR" >/dev/null 2>&1
 make install >/dev/null 2>&1
