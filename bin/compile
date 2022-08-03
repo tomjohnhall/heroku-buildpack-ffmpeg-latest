@@ -83,15 +83,11 @@ fi
 
 echo "Downloading $LIBSNDFILE_DOWNLOAD_URL" | output
 
-lsfcode=$(curl "$LIBSNDFILE_DOWNLOAD_URL" -L --silent --fail --retry 5 --retry-max-time 15 -o ./$LIBSNDFILE_ARCHIVE_NAME --write-out "%{http_code}")
-
-if [ "$lsfcode" != "200" ]; then
-  echo "Unable to download libsndfile: $code" | output && exit 1
-fi
+wget --quiet $LIBSNDFILE_DOWNLOAD_URL
 
 echo "Unpacking the lsf archive" | output
 
-tar xJf "./$LIBSNDFILE_ARCHIVE_NAME" --strip-components=1
+tar -xf "./$LIBSNDFILE_ARCHIVE_NAME" --strip-components=1
 
 if [ "$?" != "0" ]; then
   echo "Failed to unpack libsndfile" | output && exit 1
