@@ -17,7 +17,7 @@ output() {
   done
 }
 
-header "Installing ffmpeg"
+header "Installing ffmpeg & libsndfile"
 
 BUILD_DIR=${1:-}
 VENDOR_DIR="vendor"
@@ -47,7 +47,7 @@ echo "Unpacking the archive" | output
 tar xJf "./$FFMPEG_ARCHIVE_NAME" --strip-components=1
 
 if [ "$?" != "0" ]; then
-  echo "Failed to unpack" | output && exit 1
+  echo "Failed to unpack ffmpeg" | output && exit 1
 fi
 
 rm $FFMPEG_ARCHIVE_NAME
@@ -56,4 +56,35 @@ PROFILE_PATH="$BUILD_DIR/.profile.d/ffmpeg.sh"
 mkdir -p $(dirname $PROFILE_PATH)
 echo 'export PATH="$PATH:${HOME}/vendor/ffmpeg"' >> $PROFILE_PATH
 
-echo "Installation successful" | output
+echo "FFMPEG Installation successful" | output
+
+### additional libsndfile install
+
+LIBSNDFILE_DOWNLOAD_URL=https://github.com/libsndfile/libsndfile/releases/download/1.1.0/libsndfile-1.1.0.tar.xz
+LIBSNDFILE_ARCHIVE_NAME=libsndfile-1.1.0.tar.xz
+
+mkdir -p libsndfile
+cd libsndfile
+
+echo "Downloading $LIBSNDFILE_DOWNLOAD_URL" | output
+
+lsfcode=$(curl "$LIBSNDFILE_DOWNLOAD_URL" -L --silent --fail --retry 5 --retry-max-time 15 -o ./$LIBSNDFILE_ARCHIVE_NAME --write-out "%{http_code}")
+
+if [ "$lsfcode" != "200" ]; then
+  echo "Unable to download libsndfile: $code" | output && exit 1
+fi
+
+echo "Unpacking the lsf archive" | output
+
+tar xJf "./$LIBSNDFILE_ARCHIVE_NAME" --strip-components=1
+
+if [ "$?" != "0" ]; then
+  echo "Failed to unpack libsndfile" | output && exit 1
+fi
+
+rm $LIBSNDFILE_ARCHIVE_NAME
+
+cd libsndfile-1.1.0
+./configure
+make -s
+make install
