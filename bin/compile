@@ -64,19 +64,15 @@ LIBSNDFILE_DOWNLOAD_URL=https://github.com/libsndfile/libsndfile/releases/downlo
 LIBSNDFILE_ARCHIVE_NAME=libsndfile-1.1.0.tar.xz
 
 cd ..
+mkdir -p libsndfile
+cd libsndfile
 
-LSF_PROFILE_PATH="$1/.profile.d/libsndfile.sh"
 
-echo "exporting PATH and LIBRARY_PATH" | indent
+LSF_PROFILE_PATH="$BUILD_DIR/.profile.d/libsndfile.sh"
 mkdir -p $(dirname $LSF_PROFILE_PATH)
+echo 'export PATH="$PATH:${HOME}/vendor/libsndfile"' >> $LSF_PROFILE_PATH
 
-echo 'export PATH="$PATH:$HOME/vendor/bin"' >> $LSF_PROFILE_PATH
-echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/vendor/lib"' >> $LSF_PROFILE_PATH
-
-mkdir -p "$1/vendor"
-export BUILD_DIR=$1"/vendor"
-export PATH="$BUILD_DIR/bin:"$PATH
-echo "-----> Building in $BUILD_DIR"
+echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${HOME}/vendor/libsndfile"' >> $LSF_PROFILE_PATH
 
 
 if [ -f "$2/vendor/bin/libsndfile" ]; then
@@ -107,7 +103,6 @@ cd libsndfile-1.1.0
 ./configure --prefix="$BUILD_DIR" >/dev/null 2>&1
 make install >/dev/null 2>&1
 make distclean > /dev/null 2>&1
-
 
 echo "-----> Caching build."
 mkdir -p $2
